@@ -133,31 +133,8 @@ async function bootstrap() {
   server.get(['/characters', '/api/characters'], (req, res) => {
     const page = Math.max(1, parseInt(req.query.page || req.query._page || '1', 10) || 1)
     const limit = Math.max(1, parseInt(req.query.limit || req.query._limit || '20', 10) || 20)
-
-    const sortKey = (req.query.sort || req.query._sort || '').trim()
-    const sortOrder =
-      (req.query.order || req.query._order || 'asc').toLowerCase() === 'desc' ? 'desc' : 'asc'
-    const q = (req.query.q || '').toString().trim()
-
-    // Build filter map from remaining query params (excluding pagination/sorting/search keys)
-    const excluded = new Set([
-      'page',
-      '_page',
-      'limit',
-      '_limit',
-      'sort',
-      '_sort',
-      'order',
-      '_order',
-      'q',
-      'race',
-    ])
-    const filters = Object.keys(req.query)
-      .filter((k) => !excluded.has(k))
-      .reduce((acc, k) => {
-        acc[k] = req.query[k]
-        return acc
-      }, {})
+    const q = (req.query.q || req.query.search || '').toString().toLowerCase().trim()
+    const race = (req.query.race || '').toString().toLowerCase().trim().split(',').filter(Boolean)
 
     let list = router.db.get('characters').value() || []
 
@@ -165,76 +142,14 @@ async function bootstrap() {
     if (q) {
       const nq = norm(q)
       list = list.filter((item) => {
-        return (
-          norm(item.name).includes(nq) ||
-          norm(item.slug).includes(nq) ||
-          norm(getByPath(item, 'biography.fullName')).includes(nq) ||
-          norm(getByPath(item, 'biography.publisher')).includes(nq)
-        )
+        return norm(item.name).includes(nq)
       })
     }
 
-    // Apply race filter supporting multi-value races split by '/' and comma-separated query values
-    if (typeof req.query.race !== 'undefined') {
-      const racesWanted = String(req.query.race)
-        .split(',')
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean)
-      if (racesWanted.length) {
-        list = list.filter((item) => {
-          const raw = item?.appearance?.race
-          if (!raw) return false
-          const parts = String(raw)
-            .split('/')
-            .map((p) => p.trim().toLowerCase())
-            .filter(Boolean)
-          // match if any of the requested races is present in parts
-          return parts.some((p) => racesWanted.includes(p))
-        })
-      }
-    }
-
-    // Apply field filters; support dot-paths (e.g., powerstats.power=100)
-    const filterKeys = Object.keys(filters)
-    if (filterKeys.length) {
+    if (race.length) {
       list = list.filter((item) => {
-        return filterKeys.every((key) => {
-          const expected = filters[key]
-          const actual = getByPath(item, key)
-
-          if (Array.isArray(actual)) {
-            return actual.map((v) => String(v)).includes(String(expected))
-          }
-          // Try numeric equality if both are numeric
-          const expNum = Number(expected)
-          const actNum = Number(actual)
-          if (!Number.isNaN(expNum) && !Number.isNaN(actNum)) {
-            return actNum === expNum
-          }
-          // Fallback to case-insensitive substring for strings
-          return norm(actual).includes(norm(expected))
-        })
-      })
-    }
-
-    // Sorting
-    if (sortKey) {
-      list = [...list].sort((a, b) => {
-        const va = getByPath(a, sortKey)
-        const vb = getByPath(b, sortKey)
-        if (va == null && vb == null) return 0
-        if (va == null) return sortOrder === 'asc' ? -1 : 1
-        if (vb == null) return sortOrder === 'asc' ? 1 : -1
-
-        const na = Number(va)
-        const nb = Number(vb)
-        let cmp
-        if (!Number.isNaN(na) && !Number.isNaN(nb)) {
-          cmp = na - nb
-        } else {
-          cmp = String(va).localeCompare(String(vb), undefined, { sensitivity: 'base' })
-        }
-        return sortOrder === 'asc' ? cmp : -cmp
+        const races = item?.appearance?.race?.toLowerCase().split('/') ?? []
+        return race.some((r) => races.includes(r))
       })
     }
 
@@ -244,6 +159,8 @@ async function bootstrap() {
     const start = (currentPage - 1) * limit
     const end = start + limit
     const data = list.slice(start, end)
+
+    console.log(race)
 
     res.setHeader('X-Total-Count', String(total))
     res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count')
@@ -268,7 +185,3 @@ bootstrap().catch((e) => {
   console.error('Failed to start JSON Server:', e)
   process.exit(1)
 })
-
-
-
-
