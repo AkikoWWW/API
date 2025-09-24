@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Персонажі</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+  <h1>Список персонажів</h1>
+  <input type="text" id="search" placeholder="Пошук персонажа..." />
+  <ul id="character-list"></ul>
+  <select id="itemsPerPage">
+    <option value="2">2</option>
+    <option value="30" selected>30</option>
+    <option value="40">40</option>
+  </select>
+  </header>
+  <main>
+    <div id="charactersContainer" class="cards-container"></div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

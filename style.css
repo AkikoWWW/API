@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .onlygray {
+    background-color: #f7f6f6;
+  }
+  
+  body {
+    font-family: "Rubik", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+
+
+  #charactersContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 картки в ряд */
+    gap: 20px; /* відстань між картками */
+    max-width: 900px; /* щоб не розтягувалось на весь екран */
+    margin: auto; /* центрування */
+  }
