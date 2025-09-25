@@ -48,14 +48,17 @@ async function fetchCharacterDetail(id) {
     const char = await res.json();
 
     container.innerHTML = `
-      <button id="backButton">Назад</button>
-      <h2>${char.name}</h2>
-      <img src="${char.images?.lg}" alt="${char.name}">
-      <p>Інтелект: ${char.powerstats?.intelligence}</p>
-      <p>Сила: ${char.powerstats?.strength}</p>
-      <p>Швидкість: ${char.powerstats?.speed}</p>
-      <p>Біографія: ${char.biography?.fullName}</p>
-    `;
+    <button id="backButton">Назад</button>
+    <h2>${char.name}</h2>
+    <img src="${char.images?.lg}" class="photo" alt="${char.name}">
+    <div class="stats">
+      <p><span>Інтелект:</span> ${char.powerstats?.intelligence}</p>
+      <p class="power"><span>Сила:</span> ${char.powerstats?.strength}</p>
+      <p><span>Швидкість:</span> ${char.powerstats?.speed}</p>
+      <p><span>Біографія:</span> ${char.biography?.fullName}</p>
+    </div>
+  `;
+  
 
     document
       .getElementById("backButton")

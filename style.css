@@ -1,31 +1,177 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  .onlygray {
-    background-color: #f7f6f6;
-  }
-  
-  body {
-    font-family: "Rubik", sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    color: #000;
-  }
-  
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+  font-family: "Georgia", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #222;
+  background-color: #f5f6fa;
+  line-height: 1.5;
+  padding: 20px;
+}
 
-  #charactersContainer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 3 картки в ряд */
-    gap: 20px; /* відстань між картками */
-    max-width: 900px; /* щоб не розтягувалось на весь екран */
-    margin: auto; /* центрування */
-  }
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#search {
+  padding: 10px 15px;
+  font-size: 16px;
+  width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  transition: border 0.3s;
+}
+
+#search:focus {
+  border: 1px solid #0077ff;
+  outline: none;
+}
+
+#itemsPerPage {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.3s;
+}
+
+#itemsPerPage:focus {
+  border: 1px solid #0077ff;
+  outline: none;
+}
+
+#charactersContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-top: 5px;
+  color: #444;
+}
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#pagination button {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+#pagination button:hover:not(:disabled) {
+  background: #0077ff;
+  color: #fff;
+  border-color: #0077ff;
+}
+
+#pagination button:disabled {
+  background: #0077ff;
+  color: #fff;
+  cursor: default;
+}
+
+.photo {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+}
+
+.power {
+  font-weight: bold;
+  color: #c0392b;
+}
+
+#backButton {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #0077ff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#backButton:hover {
+  background: #005fcc;
+}
+
+.stats {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.stats p {
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.stats p span {
+  font-weight: bold;
+  color: #333;
+  margin-right: 8px;
+}
+
+.power span {
+  color: #c0392b; 
+}
