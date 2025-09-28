@@ -1,6 +1,7 @@
 const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
 const itemsPerPageSelect = document.getElementById("itemsPerPage");
+const raceSelect = document.getElementById("raceFilter");
 const container = document.getElementById("charactersContainer");
 
 let currentPage = 1;
@@ -12,14 +13,23 @@ const API_URL = "http://localhost:3001/api/characters";
 async function fetchCharacters() {
   try {
     const searchTerm = searchInput.value.trim().toLowerCase();
-    const res = await fetch(
-      `${API_URL}?page=${currentPage}&limit=${itemsPerPage}&search=${searchTerm}`
-    );
+    const selectedRace = raceSelect.value;
+
+    const params = new URLSearchParams({
+      page: currentPage,
+      limit: itemsPerPage,
+      search: searchTerm,
+    });
+
+    if (selectedRace) {
+      params.append("race", selectedRace);
+    }
+
+    const res = await fetch(`${API_URL}?${params.toString()}`);
     const data = await res.json();
 
-
-    renderCharacters(data.data); 
-    totalPages = data.meta.pages; 
+    renderCharacters(data.data);
+    totalPages = data.meta.pages;
     renderPagination();
   } catch (error) {
     container.innerHTML = "<p>Помилка завантаження персонажів</p>";
@@ -41,28 +51,24 @@ function renderCharacters(characters) {
   });
 }
 
-
 async function fetchCharacterDetail(id) {
   try {
     const res = await fetch(`${API_URL}/${id}`);
     const char = await res.json();
 
     container.innerHTML = `
-    <button id="backButton">Назад</button>
-    <h2>${char.name}</h2>
-    <img src="${char.images?.lg}" class="photo" alt="${char.name}">
-    <div class="stats">
-      <p><span>Інтелект:</span> ${char.powerstats?.intelligence}</p>
-      <p class="power"><span>Сила:</span> ${char.powerstats?.strength}</p>
-      <p><span>Швидкість:</span> ${char.powerstats?.speed}</p>
-      <p><span>Біографія:</span> ${char.biography?.fullName}</p>
-    </div>
-  `;
-  
+      <button id="backButton">Назад</button>
+      <h2>${char.name}</h2>
+      <img src="${char.images?.lg}" class="photo" alt="${char.name}">
+      <div class="stats">
+        <p><span>Інтелект:</span> ${char.powerstats?.intelligence}</p>
+        <p class="power"><span>Сила:</span> ${char.powerstats?.strength}</p>
+        <p><span>Швидкість:</span> ${char.powerstats?.speed}</p>
+        <p><span>Біографія:</span> ${char.biography?.fullName}</p>
+      </div>
+    `;
 
-    document
-      .getElementById("backButton")
-      .addEventListener("click", () => fetchCharacters());
+    document.getElementById("backButton").addEventListener("click", () => fetchCharacters());
   } catch (error) {
     container.innerHTML = "<p>Помилка завантаження героя</p>";
     console.error(error);
@@ -83,6 +89,23 @@ function renderPagination() {
   }
 }
 
+async function fetchRaces() {
+  try {
+    const res = await fetch("http://localhost:3001/api/races");
+    const races = await res.json();
+
+    raceSelect.innerHTML = `<option value="">Всі раси</option>`;
+    races.forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r;
+      opt.textContent = r;
+      raceSelect.appendChild(opt);
+    });
+  } catch (error) {
+    console.error("Помилка завантаження рас", error);
+  }
+}
+
 searchInput.addEventListener("input", () => {
   currentPage = 1;
   fetchCharacters();
@@ -94,4 +117,9 @@ itemsPerPageSelect.addEventListener("change", () => {
   fetchCharacters();
 });
 
-fetchCharacters();
+raceSelect.addEventListener("change", () => {
+  currentPage = 1;
+  fetchCharacters();
+});
+
+fetchRaces().then(() => fetchCharacters());

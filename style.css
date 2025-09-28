@@ -42,6 +42,7 @@ header h1 {
 
 #itemsPerPage {
   padding: 10px;
+  margin-top: 10px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -174,4 +175,18 @@ header h1 {
 
 .power span {
   color: #c0392b; 
+}
+
+#raceFilter {
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.3s;
+  background: #524b4b;
+  width: 250px;
+  display: block;
+  margin: 20px auto 40px auto;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(217, 0, 0, 0.08);
 }
